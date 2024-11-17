@@ -1,47 +1,46 @@
 #!/bin/bash
-####################################################################################################
-#       zsh (better bash)   https://linuxopsys.com/topics/make-ubuntu-terminal-look-like-kali-linux
-####################################################################################################
-# Setup zsh
-apt install zsh -y
-
-# TODO: work out how to set default for vscode through this scrit.
-# Once zsh has been installed, simply run the zsh command to switch from the bash prompt to the zsh prompt. When you run the command, you will see a z shell configuration prompt (select option zero from the prompt and hit enter to apply)
-
-# Next, we'll need to install a few z shell plugins to add some useful functionality to our z shell. Here are the three plugins that will be installed.
-# zsh-syntax-highlighting - This plugin highlights syntax in the z shell. It allows command highlighting when typing at a z shell prompt. This is useful for reviewing commands before running them, notably in spotting syntax errors.
-# zsh-autosuggestions - this plugin suggests commands to you as you enter them based on your previous commands and completions.
-apt install zsh-syntax-highlighting zsh-autosuggestions -y
-
-# update repository.
-apt update -y
-
-# The last things you need to install are:
-# qterminal - a lightweight Qt terminal emulator based on QTermWidget, by default Ubuntu uses gnome terminal.
-# fonts-firacode - a free monospaced font with ligatures for common multi-character programming combinations.
-# gnome-tweaks - this is a must-have tool for any GNOME user. It allows you to customize the appearance and functionality of your desktop.
-apt install qterminal fonts-firacode gnome-tweaks -y
-
-# Now that you've installed z shell and its plugins, you'll need to make it your default login shell.
-# To accomplish so, we'll use the chsh (change shell) command. chsh is a powerful tool used to change a login shell.
-# There is no need to install the chsh command because it is a standard package that comes pre-installed on all Linux distributions.
+# Generated with Gemini.
 #
-# Run the following command to change your default login shell to z shell:
-# Please keep in mind that this command will permanently change your default login shell to the one you specify.
-chsh -s /bin/zsh
+# This script configures your Ubuntu terminal to use Zsh.
 
-# You need to tweak the zshrc file in order to customize it's appearance. This file is a hidden file in your home directory (~/.zshrc).
-# The .zshrc file is a startup file equivalent for bashrc file for bash (Bourne Again shell) that is used to customize and configure the z shell.
-# This file may not be available at times, so you must create it; if it is already available,
-# delete it and create a new one because you will need to override its contents.
-#
-# To delete the file run the following command:
-rm ~/.zshrc
+## 1. Update package list and install Zsh
+echo "Updating package list and installing Zsh..."
+sudo apt update  -y
+sudo apt install -y zsh
 
-# create a new file using kali-linx config:
-curl "https://gitlab.com/kalilinux/packages/kali-defaults/-/raw/kali/master/etc/skel/.zshrc" --output ~/.zshrc
+## 2. Set Zsh as the default shell
+echo "Setting Zsh as the default shell..."
+chsh -s $(which zsh)
 
-# After you have successfully created the .zshrc file, open it with your preferred text editor, copy and paste the contents of this pastebin into your .zshrc file, and save.
-# To make the changes take effect, source your .zshrc file with the source or dot (.) command, or simply close and reopen your terminal.
-# source ~/zshrc
+echo "Zsh has been installed and set as your default shell."
+echo "You need to log out and log back in for the changes to take effect."
+
+## 3. Install Oh My Zsh using curl
+echo "Installing Oh My Zsh..."
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+## 4. Configure Oh My Zsh (Optional)
+# Change the theme to 'agnoster' (or your preferred theme)
+echo "Changing Oh My Zsh theme to 'agnoster'..."
+sed -i 's/ZSH_THEME="robbyrussell"/ZSH_THEME="agnoster"/g' ~/.zshrc
+
+# Enable plugins (git and zsh-autosuggestions)
+echo "Enabling plugins: git and zsh-autosuggestions..."
+sed -i 's/plugins=(git)/plugins=(git zsh-autosuggestions)/g' ~/.zshrc
+
+# Install zsh-autosuggestions plugin
+echo "Installing zsh-autosuggestions plugin..."
+git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+
+# Apply changes by sourcing the .zshrc file
+echo "Applying changes..."
 source ~/.zshrc
+
+echo "Oh My Zsh has been installed and configured."
+echo "Remember to log out and log back in to see the changes."
+
+## 5. Set a custom prompt
+echo "Setting a custom prompt..."
+echo "PROMPT='%F{green}%n%f@%F{magenta}%m%f:%F{blue}%~%f$ '" >> ~/.zshrc
+
+echo "Configuration complete!"
